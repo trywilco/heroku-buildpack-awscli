@@ -11,14 +11,21 @@ function indent() {
   esac
 }
 
-AWS_CLI_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+AWS_CLI_VERSION="2.13.32"
+
+if [ -n "${AWS_CLI_VERSION+x}" ]; then
+  echo "-----> AWS CLI version pinned to ${AWS_CLI_VERSION}"
+  AWS_CLI_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip"
+else
+  AWS_CLI_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+fi
 
 BUILD_DIR=$1
 BUILDPACK_DIR="$(dirname $(dirname $0))"
 INSTALL_DIR="/app/.awscli"
 TMP_DIR=$(mktemp -d)
 
-echo "-----> Downloading AWS CLI"
+echo "-----> Downloading AWS CLI ${AWS_CLI_URL}"
 curl --silent --show-error --fail -o "${TMP_DIR}/awscliv2.zip" "${AWS_CLI_URL}" |& indent
 unzip -qq -d "${TMP_DIR}" "${TMP_DIR}/awscliv2.zip" |& indent
 
